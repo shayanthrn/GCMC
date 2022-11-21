@@ -143,9 +143,6 @@ def train(args):
     dataset.test_dec_graph = dataset.test_dec_graph.int().to(args.device)
 
     print("Start training ...")
-    user_rating_movies = [1, 13, 15, 16] #someone like user with id = 1
-    user_rating_values = [5, 5, 4, 5]
-    encode_graph_infer = dataset.generate_enc_graph_infer(user_rating_movies, user_rating_values,add_support=True)
     dur = []
     for iter_idx in range(1, args.train_max_iter):
         if iter_idx > 3:
@@ -255,11 +252,18 @@ def train(args):
     user_rating_movies = [1, 13, 15, 16] #someone like user with id = 1
     user_rating_values = [5, 5, 4, 5]
     encode_graph_infer = dataset.generate_enc_graph_infer(user_rating_movies, user_rating_values,add_support=True)
+    rating_pairs = (np.array([943 for i in range(2)],
+                                 dtype=np.int64),
+                        np.array([20,28], # find rating for these movies
+                                 dtype=np.int64))
+    decode_graph_infer = dataset.generate_dec_graph_infer(rating_pairs)
+    encode_graph_infer = encode_graph_infer.int().to(args.device)
+    decode_graph_infer = decode_graph_infer.int().to(args.device)
     infered_ratings = net(
             encode_graph_infer,
-            dataset.test_dec_graph,
-            dataset.user_feature,
-            dataset.movie_feature,
+            decode_graph_infer,
+            None,
+            None,
         )
 
     real_pred_ratings = (
@@ -267,10 +271,6 @@ def train(args):
             * nd_possible_rating_values.view(1, -1)
         ).sum(dim=1)
     print(real_pred_ratings)
-    print(real_pred_ratings.shape)
-    print("---------")
-    print(dataset.test_labels)
-    print(dataset.test_labels.shape)
 
 
 def config():
