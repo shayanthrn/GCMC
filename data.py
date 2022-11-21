@@ -292,14 +292,17 @@ class MovieLens(object):
 
         return graph
     
-    def generate_enc_graph_infer(self, user_rating_pairs, user_rating_values, add_support=False):
-        rating_pairs, rating_values = self._generate_pair_value(self.all_train_rating_info)
+    def generate_enc_graph_infer(self, user_rating_movies, user_rating_values, add_support=False):
+        rating_pairs_old, rating_values_old = self._generate_pair_value(self.all_train_rating_info)
         #append user rating pairs
-
-        user_movie_R = np.zeros((self._num_user, self._num_movie), dtype=np.float32)
+        new_rating_pair_0 = np.append(rating_pairs_old[0],[np.int64(self._num_user) for i in range(len(user_rating_movies))])
+        new_rating_pair_1 = np.append(rating_pairs_old[1],[self.global_movie_id_map[movie_id] for movie_id in user_rating_movies])
+        rating_pairs = (new_rating_pair_0,new_rating_pair_1)
+        rating_values = np.append(rating_values_old,[np.int64(rate) for rate in user_rating_values])
+        user_movie_R = np.zeros((self._num_user+1, self._num_movie), dtype=np.float32)
         user_movie_R[rating_pairs] = rating_values
         data_dict = dict()
-        num_nodes_dict = {'user': self._num_user, 'movie': self._num_movie}
+        num_nodes_dict = {'user': self._num_user+1, 'movie': self._num_movie}
         rating_row, rating_col = rating_pairs
         for rating in self.possible_rating_values:
             ridx = np.where(rating_values == rating)

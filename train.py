@@ -143,6 +143,9 @@ def train(args):
     dataset.test_dec_graph = dataset.test_dec_graph.int().to(args.device)
 
     print("Start training ...")
+    user_rating_movies = [1, 13, 15, 16] #someone like user with id = 1
+    user_rating_values = [5, 5, 4, 5]
+    encode_graph_infer = dataset.generate_enc_graph_infer(user_rating_movies, user_rating_values,add_support=True)
     dur = []
     for iter_idx in range(1, args.train_max_iter):
         if iter_idx > 3:
@@ -249,9 +252,11 @@ def train(args):
     valid_loss_logger.close()
     test_loss_logger.close()
     # I should create graph with all of the users and movies and get the row of my desired user
-    encode_graph_infer = dataset.generate_enc_graph_infer(add_support=True)
+    user_rating_movies = [1, 13, 15, 16] #someone like user with id = 1
+    user_rating_values = [5, 5, 4, 5]
+    encode_graph_infer = dataset.generate_enc_graph_infer(user_rating_movies, user_rating_values,add_support=True)
     infered_ratings = net(
-            dataset.test_enc_graph,
+            encode_graph_infer,
             dataset.test_dec_graph,
             dataset.user_feature,
             dataset.movie_feature,
