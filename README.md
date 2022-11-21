@@ -1,3 +1,5 @@
+# GNN based movie recommendation system
+
 # Modifed Version
 This is implementation of the original GCMC paper.
 I just added some function to make inference much easier
