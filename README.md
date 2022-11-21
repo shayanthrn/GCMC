@@ -1,3 +1,8 @@
+# Modifed Version
+This is implementation of the original GCMC paper.
+I just added some function to make inference much easier
+Hope you enjoy
+
 # Graph Convolutional Matrix Completion
 
 Paper link: [https://arxiv.org/abs/1706.02263](https://arxiv.org/abs/1706.02263)
