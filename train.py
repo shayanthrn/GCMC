@@ -271,6 +271,7 @@ def train(args):
             * nd_possible_rating_values.view(1, -1)
         ).sum(dim=1)
     print(real_pred_ratings)
+    # th.save(net.state_dict(), "./model.pth")
 
 
 def config():
@@ -287,7 +288,7 @@ def config():
     parser.add_argument("--silent", action="store_true")
     parser.add_argument(
         "--data_name",
-        default="ml-1m",
+        default="ml-100k",
         type=str,
         help="The dataset name: ml-100k, ml-1m, ml-10m",
     )
@@ -295,12 +296,12 @@ def config():
         "--data_test_ratio", type=float, default=0.1
     )  ## for ml-100k the test ration is 0.2
     parser.add_argument("--data_valid_ratio", type=float, default=0.1)
-    parser.add_argument("--use_one_hot_fea", action="store_true", default=False)
+    parser.add_argument("--use_one_hot_fea", action="store_true", default=True)
     parser.add_argument("--model_activation", type=str, default="leaky")
     parser.add_argument("--gcn_dropout", type=float, default=0.7)
     parser.add_argument("--gcn_agg_norm_symm", type=bool, default=True)
     parser.add_argument("--gcn_agg_units", type=int, default=500)
-    parser.add_argument("--gcn_agg_accum", type=str, default="sum")
+    parser.add_argument("--gcn_agg_accum", type=str, default="stack")
     parser.add_argument("--gcn_out_units", type=int, default=75)
     parser.add_argument("--gen_r_num_basis_func", type=int, default=2)
     parser.add_argument("--train_max_iter", type=int, default=2000)
